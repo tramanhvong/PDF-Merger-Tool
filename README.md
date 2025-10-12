@@ -1,4 +1,4 @@
-# pdf_merger
+# My Own PDF Merger
 Desktop app to merge multiple PDFs into one single PDF, with option to reorder the files.
 Files will be ordered according to top-down.
 
