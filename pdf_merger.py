@@ -39,7 +39,7 @@ class ListWidget(QListWidget):
         else:
             return super().dragMoveEvent(event)
         
-    def dragDropEvent(self, event):
+    def dropEvent(self, event):
         if event.mimeData().hasUrls():
             event.setDropAction(Qt.CopyAction)
             event.accept()
