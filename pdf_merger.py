@@ -18,6 +18,72 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+class ListWidget(QListWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=None)
+        self.setAcceptDrops(True)
+        self.setStyleSheet('font-size: 25px;')
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+    
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            return super().dragEnterEvent(event)
+        
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            return super().dragMoveEvent(event)
+        
+    def dragDropEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+
+            pdf_list = []
+            for url in event.mimeData().urls():
+                if url.isLocalFile(): 
+                    if url.toString().endswith(".pdf"):
+                        # if local file and is pdf, then convert to string
+                        pdf_list.append(str(url.toLocalFile()))
+            self.addItems(pdf_list) # append the file to list
+        else:
+            return super().dragDropEvent(event)
+        
+class output_field(QLineEdit):
+    def __init__(self):
+        super().__init__()
+        self.height = 55
+        self.setStyleSheet('font-size: 30px;')
+        self.setFixedHeight(self.height)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore() # not changing behavior
+        
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore() # not changing behavior
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+
+            if event.mimeData().urls(): # in case of multiple files, just take the first one
+                self.setText(event.mimeData().urls()[0].toLocalFile())
+        else:
+            event.ignore()
+
 class PDFApp(QWidget):
     def __init__(self):
         super().__init__()
