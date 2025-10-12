@@ -52,7 +52,7 @@ class ListWidget(QListWidget):
                         pdf_list.append(str(url.toLocalFile()))
             self.addItems(pdf_list) # append the file to list
         else:
-            return super().dragDropEvent(event)
+            return super().dropEvent(event)
         
 class output_field(QLineEdit):
     def __init__(self):
