@@ -84,6 +84,16 @@ class output_field(QLineEdit):
         else:
             event.ignore()
 
+class button(QPushButton):
+    def __init__(self, label_text):
+        super().__init__()
+        self.setText(label_text)
+        self.setStyleSheet('''
+                           font=size: 30px,
+                           width: 180px;
+                           height: 50px;
+                           ''')
+
 class PDFApp(QWidget):
     def __init__(self):
         super().__init__()
