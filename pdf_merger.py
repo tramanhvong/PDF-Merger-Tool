@@ -91,7 +91,7 @@ class button(QPushButton):
         self.setStyleSheet('''
                            font=size: 30px,
                            width: 180px;
-                           height: 50px;
+                           height: 40px;
                            ''')
 
 class PDFApp(QWidget):
@@ -100,6 +100,46 @@ class PDFApp(QWidget):
         self.setWindowTitle("PDF Merger")
         self.setWindowIcon(QIcon(resource_path("resource/favicon.ico")))
         self.resize(1800,800)
+        self.initUI()
+
+    def initUI(self):
+        mainLayout = QVBoxLayout()
+        outputFolderRow = QHBoxLayout()
+        buttonLayout = QHBoxLayout()
+
+        self.outputFile = output_field()
+        outputFolderRow.addWidget(self.outputFile)
+
+        self.buttonBrowseOutputFile = button("&Save To")
+        outputFolderRow.addWidget(self.buttonBrowseOutputFile)
+
+
+        """
+        Listbox Widget
+        """
+        self.pdfListWidget = ListWidget(self)
+
+        """
+        Buttons: delete, merge, close, reset
+        Add the buttons to button layout
+        """
+        self.buttonDeleteSelected = button("&Delete")
+        buttonLayout.addWidget(self.buttonDeleteSelected, 1, Qt.AlignRight) # column index and alignment
+
+        self.buttonMerge = button("&Merge")
+        buttonLayout.addWidget(self.buttonMerge)
+
+        self.buttonClose = button("&Close")
+        self.buttonClose.clicked.connect(self.close)
+        buttonLayout.addWidget(self.buttonClose)
+
+        self.buttonReset = button("&Reset")
+        buttonLayout.addWidget(self.buttonReset)
+
+        mainLayout.addLayout(outputFolderRow)
+        mainLayout.addWidget(self.pdfListWidget)
+        mainLayout.addLayout(buttonLayout)
+        self.setLayout(mainLayout)
 
 app = QApplication(sys.argv)
 app.setStyle('Fusion')
