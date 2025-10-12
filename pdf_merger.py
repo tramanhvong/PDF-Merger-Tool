@@ -124,9 +124,11 @@ class PDFApp(QWidget):
         Add the buttons to button layout
         """
         self.buttonDeleteSelected = button("&Delete")
+        self.buttonDeleteSelected.clicked.connect(self.deleteSelected)
         buttonLayout.addWidget(self.buttonDeleteSelected, 1, Qt.AlignRight) # column index and alignment
 
         self.buttonMerge = button("&Merge")
+        self.buttonMerge.clicked.connect(self.mergePDFs)
         buttonLayout.addWidget(self.buttonMerge)
 
         self.buttonClose = button("&Close")
@@ -134,12 +136,57 @@ class PDFApp(QWidget):
         buttonLayout.addWidget(self.buttonClose)
 
         self.buttonReset = button("&Reset")
+        self.buttonReset.clicked.connect(self.clearQueue)
         buttonLayout.addWidget(self.buttonReset)
 
         mainLayout.addLayout(outputFolderRow)
         mainLayout.addWidget(self.pdfListWidget)
         mainLayout.addLayout(buttonLayout)
         self.setLayout(mainLayout)
+
+    def deleteSelected(self):
+        for item in self.pdfListWidget.selectedItems():
+            self.pdfListWidget.takeItem(self.pdfListWidget.row(item))
+
+    def clearQueue(self):
+        self.pdfListWidget.clear()
+        self.outputFile.clear()
+
+    def dialogMessage(self, message): # popup message 
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle("PDF Merger")
+        dlg.setIcon(QMessageBox.Information)
+        dlg.setText(message)
+        dlg.show()
+
+    def _getSaveFilePath(self):
+        # return tuple (file path, extension type)
+        fileSavePath, _ = QFileDialog.getSavedFileName(self, "Save PDF file", os.getcwd(), "PDF file (*.pdf)")
+        return fileSavePath
+    
+    def populateOutputFileName(self):
+        path = self._getSaveFilePath()
+        if path:
+            self.outputFile.setText(path)
+
+    def mergePDFs(self):
+        if not self.outputFile.text():
+            self.populateOutputFileName()
+            return
+        if self.pdfListWidget.count() > 0:
+            pdfMerger = PdfFileMerger()
+
+            try:
+                for i in range(self.pdfListWidget.count()):
+                    pdfMerger.append(self.pdfListWidget.item(i).text())
+                pdfMerger.write(self.outputFile.text())
+                self.dialogMessage("PDFs merged successfully!")
+
+            except Exception as e:
+                self.dialogMessage(f"Error: {str(e)}")
+        else:
+            self.dialogMessage("No PDFs to merge!")
+
 
 app = QApplication(sys.argv)
 app.setStyle('Fusion')
