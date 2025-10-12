@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButto
 
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QIcon
-from PyPDF2 import PdfFileMerger
+from PyPDF2 import PdfMerger
 
 def resource_path(relative_path):
     try:
@@ -111,6 +111,7 @@ class PDFApp(QWidget):
         outputFolderRow.addWidget(self.outputFile)
 
         self.buttonBrowseOutputFile = button("&Save To")
+        self.buttonBrowseOutputFile.clicked.connect(self.populateOutputFileName)
         outputFolderRow.addWidget(self.buttonBrowseOutputFile)
 
 
@@ -161,7 +162,7 @@ class PDFApp(QWidget):
 
     def _getSaveFilePath(self):
         # return tuple (file path, extension type)
-        fileSavePath, _ = QFileDialog.getSavedFileName(self, "Save PDF file", os.getcwd(), "PDF file (*.pdf)")
+        fileSavePath, _ = QFileDialog.getSaveFileName(self, "Save PDF file", os.getcwd(), "PDF file (*.pdf)")
         return fileSavePath
     
     def populateOutputFileName(self):
@@ -174,7 +175,7 @@ class PDFApp(QWidget):
             self.populateOutputFileName()
             return
         if self.pdfListWidget.count() > 0:
-            pdfMerger = PdfFileMerger()
+            pdfMerger = PdfMerger()
 
             try:
                 for i in range(self.pdfListWidget.count()):
