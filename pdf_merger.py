@@ -20,8 +20,15 @@ def resource_path(relative_path):
 
 class PDFApp(QWidget):
     def __init__(self):
-        super.__init__()
+        super().__init__()
         self.setWindowTitle("PDF Merger")
-        self.setWindowIcon(QIcon(resource_path("../resource/merger_favicon.ico")))
+        self.setWindowIcon(QIcon(resource_path("resource/favicon.ico")))
         self.resize(1800,800)
 
+app = QApplication(sys.argv)
+app.setStyle('Fusion')
+
+pdf = PDFApp()
+pdf.show()
+
+sys.exit(app.exec_())
