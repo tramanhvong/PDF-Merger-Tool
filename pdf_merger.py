@@ -3,6 +3,7 @@ import sys, os, io
 if hasattr(sys, 'frozen'):
     os.environ['PATH'] = sys._MEIPASS + ';' + os.environ['PATH']
 
+# Import layout tools from PyQt and PyPDF
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QListWidget, \
     QVBoxLayout, QHBoxLayout, QGridLayout, \
     QDialog, QFileDialog, QMessageBox, QAbstractItemView
@@ -11,7 +12,13 @@ from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QIcon
 from PyPDF2 import PdfMerger
 
+
 def resource_path(relative_path):
+    """
+    Input: a relative path to current base path
+    Output: path from the two path parameters
+    Check: base path exists and is valid
+    """
     try:
         base_path = sys._MEIPASS
     except Exception:
@@ -19,6 +26,10 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class ListWidget(QListWidget):
+    """ Define class ListWidget
+    1. Set up stylesheet, allow drag and drop mode to drag file into layout, allow selection mode for chosen files.
+    2. Define events for adding files from URLs and for dragging files into UI.
+    """
     def __init__(self, parent=None):
         super().__init__(parent=None)
         self.setAcceptDrops(True)
@@ -66,15 +77,8 @@ class output_field(QLineEdit):
             event.accept()
         else:
             event.ignore() # not changing behavior
-        
-    def dragMoveEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.setDropAction(Qt.CopyAction)
-            event.accept()
-        else:
-            event.ignore() # not changing behavior
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event): # drag and drop
         if event.mimeData().hasUrls():
             event.setDropAction(Qt.CopyAction)
             event.accept()
